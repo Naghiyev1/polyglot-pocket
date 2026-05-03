@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  
+  --color-brand-primary: #1A1A1A;
+  --color-brand-accent: #DC2626; /* Red for nuance */
+  --color-brand-bg: #F9F7F2;
+  --color-brand-highlight: #FEF9C3; /* Yellow for context */
+}
+
+@layer base {
+  body {
+    @apply bg-brand-bg text-brand-primary antialiased selection:bg-brand-accent/10;
+  }
+}
+
+.brutal-shadow {
+  box-shadow: 4px 4px 0px 0px #1A1A1A;
+}
+
+.brutal-shadow-sm {
+  box-shadow: 2px 2px 0px 0px #1A1A1A;
+}
+
+.editorial-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 3rem;
+}
