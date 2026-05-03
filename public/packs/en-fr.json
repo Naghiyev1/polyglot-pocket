@@ -1,0 +1,9 @@
+[
+  { "word": "hello", "definition": "salut", "language": "French", "source": "offline" },
+  { "word": "world", "definition": "monde", "language": "French", "source": "offline" },
+  { "word": "friend", "definition": "ami", "language": "French", "source": "offline" },
+  { "word": "book", "definition": "livre", "language": "French", "source": "offline" },
+  { "word": "apple", "definition": "pomme", "language": "French", "source": "offline" },
+  { "word": "house", "definition": "maison", "language": "French", "source": "offline" },
+  { "word": "water", "definition": "eau", "language": "French", "source": "offline" }
+]
