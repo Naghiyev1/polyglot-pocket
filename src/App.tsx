@@ -40,18 +40,23 @@ export default function App() {
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'done'>('idle');
 
-  useEffect(() => {
-    console.log('Polyglot Pocket Initialized - v2.4.2');
-  }, []);
-
   const history = useLiveQuery(() => db.entries.orderBy('createdAt').reverse().limit(10).toArray());
   const allSaved = useLiveQuery(() => db.entries.toArray());
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  if (history === undefined || allSaved === undefined) {
+  // If DB is taking too long, show a warning or fallback
+  const [dbReady, setDbReady] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDbReady(true);
+    }, 2000); // Wait 2s for DB
+    return () => clearTimeout(timer);
+  }, []);
+
+  if ((history === undefined || allSaved === undefined) && !dbReady) {
     return (
-      <div className="min-h-screen bg-[#F9F7F2] flex items-center justify-center font-serif italic text-xl opacity-50">
-        Awakening Lexicon...
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center font-serif italic text-xl opacity-50 p-6 text-center">
+        Synchronizing Linguistic Patterns...
       </div>
     );
   }
@@ -252,7 +257,7 @@ export default function App() {
           <div className="mt-auto hidden lg:block p-8 bg-white border border-brand-primary brutal-shadow">
             <h3 className="text-[10px] font-black uppercase tracking-[0.2em] mb-4">Local History</h3>
             <div className="space-y-4">
-              {history?.slice(0, 3).map(h => (
+              {(history || []).slice(0, 3).map(h => (
                 <div key={h.id} className="flex flex-col gap-1 border-l-2 border-brand-primary/10 pl-3">
                   <p className="text-xs font-bold font-serif italic">{h.word}</p>
                   <p className="text-[10px] opacity-40 line-clamp-1">{h.definition}</p>
@@ -373,7 +378,7 @@ export default function App() {
                 className="flex-1 space-y-12 pb-24"
               >
                 <div className="flex justify-between items-baseline border-b border-brand-primary pb-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em]">Collective Repository ({allSaved?.length})</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em]">Collective Repository ({(allSaved || []).length})</h3>
                   <div className="flex gap-4">
                     <button onClick={exportData} className="text-[10px] font-black uppercase hover:underline">Export</button>
                     <button onClick={() => fileInputRef.current?.click()} className="text-[10px] font-black uppercase hover:underline">Import</button>
@@ -382,7 +387,7 @@ export default function App() {
                 </div>
 
                 <div className="space-y-4">
-                  {allSaved?.map(entry => (
+                  {(allSaved || []).map(entry => (
                     <div key={entry.id} className="group border-b border-brand-primary/10 pb-4 flex justify-between items-start">
                       <div>
                         <div className="flex items-center gap-3 mb-2">
@@ -531,23 +536,6 @@ export default function App() {
   );
 }
 
-function LangSelect({ value, onChange, alignRight }: { value: string, onChange: (v: string) => void, alignRight?: boolean }) {
-  return (
-    <div className={cn("flex-1 p-4", alignRight ? "text-right" : "text-left")}>
-      <select 
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="bg-transparent font-serif italic text-2xl border-none outline-none focus:ring-0 w-full cursor-pointer hover:text-brand-accent transition-colors"
-      >
-        <option>English</option>
-        <option>French</option>
-        <option>Spanish</option>
-        <option>German</option>
-      </select>
-    </div>
-  );
-}
-
 function EditorialPackItem({ name, id, size }: { name: string, id: string, size: string }) {
   const [status, setStatus] = useState<'available' | 'downloading' | 'installed'>('available');
   
@@ -606,6 +594,23 @@ function EditorialSettingItem({ label, desc }: { label: string, desc: string }) 
           className={cn("w-4 h-4", active ? "bg-brand-bg" : "bg-brand-primary")}
         />
       </div>
+    </div>
+  );
+}
+
+function LangSelect({ value, onChange, alignRight }: { value: string, onChange: (v: string) => void, alignRight?: boolean }) {
+  return (
+    <div className={cn("flex-1 p-4", alignRight ? "text-right" : "text-left")}>
+      <select 
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="bg-transparent font-serif italic text-2xl border-none outline-none focus:ring-0 w-full cursor-pointer hover:text-brand-accent transition-colors"
+      >
+        <option>English</option>
+        <option>French</option>
+        <option>Spanish</option>
+        <option>German</option>
+      </select>
     </div>
   );
 }
