@@ -1,0 +1,6 @@
+{
+  "name": "Polyglot Pocket",
+  "description": "An independent, offline-first translation and dictionary app powered by open-source lexicons and privacy-centric local storage.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
