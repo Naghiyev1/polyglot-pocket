@@ -41,16 +41,20 @@ export default function App() {
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'done'>('idle');
 
   useEffect(() => {
-    console.log('Polyglot Pocket Initialized - v2.4.1');
-    const root = document.getElementById('root');
-    if (root) {
-      root.style.border = '2px solid transparent'; // Force reflow or something
-    }
+    console.log('Polyglot Pocket Initialized - v2.4.2');
   }, []);
 
   const history = useLiveQuery(() => db.entries.orderBy('createdAt').reverse().limit(10).toArray());
   const allSaved = useLiveQuery(() => db.entries.toArray());
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  if (history === undefined || allSaved === undefined) {
+    return (
+      <div className="min-h-screen bg-[#F9F7F2] flex items-center justify-center font-serif italic text-xl opacity-50">
+        Awakening Lexicon...
+      </div>
+    );
+  }
 
   const cacheResult = async (word: string, definition: string, lang: string) => {
     try {
